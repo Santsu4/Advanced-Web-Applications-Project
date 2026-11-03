@@ -1,0 +1,27 @@
+version: '3.8'
+services:
+  frontend:
+    build: 
+      context: ./frontend
+    ports:
+      - "8080:8080"
+    depends_on:
+      - backend
+
+  backend:
+    build: 
+      context: ./backend
+    ports:
+      - "3000:3000"
+    environment:
+      - DB_HOST=db
+      - FRONTEND_URL=http://localhost:8080
+
+  db:
+    image: postgres:13-alpine
+    environment:
+      - POSTGRES_USER=appuser
+      - POSTGRES_PASSWORD=your_secure_password
+      - POSTGRES_DB=appdb
+    ports:
+      - "5432:5432"

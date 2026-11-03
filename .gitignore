@@ -21,3 +21,7 @@ build/
 .vscode/*
 !.vscode/extensions.json
 !.vscode/settings.json
+
+# Ignore secrets
+k8s/secret.yaml
+secret.yaml
