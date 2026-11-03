@@ -1,35 +1,36 @@
-
 # RIO
 
-RIO is a web application developed as part of OAMK's Advanced Web Applications Project (ID00CS47-3007). The project focuses on building a full-stack application using modern web technologies and collaborative development practices.
+RIO is a cinema booking web application being developed for Oulu University of Applied Sciences (OAMK)'s Advanced Web Applications Project (ID00CS47-3007).
+
+The project aims to help customers browse screenings, choose seats, and purchase tickets, while providing staff with tools to manage cinema operations.
 
 ## Tech Stack
 
-| Layer | Technology |
-|-------|------------|
+Planned technologies:
+
+| Area | Technology |
+| --- | --- |
 | Frontend | React, JavaScript |
 | Backend | Node.js, Express |
-| Database | PostgreSQL |
-| Deployment | Microsoft Azure |
+| Database | PostgreSQL, hosted at [CSC](https://www.csc.fi/) |
+| Application hosting | Microsoft Azure |
 
-## Project Architecture
+## Contributing
 
-RIO follows a feature-based architecture, organizing related functionality into independent modules to improve maintainability and scalability.
+Start with the [Contributing Guidelines](CONTRIBUTING.md) for contributor expectations and a checklist for submitting changes.
 
-The application consists of three main layers:
+## Architecture
 
-- **Frontend:** Handles the user interface and interactions using React.
-- **Backend:** Provides REST API endpoints and manages application logic using Express.
-- **Database:** Stores and manages application data using PostgreSQL.
+The [Architecture guide](docs/ARCHITECTURE.md) explains the planned application structure, component responsibilities, and data flow.
 
-## Development Workflow
+## Product Backlog
 
-Development is managed through Git and GitHub using dedicated branches and pull requests.
+Explore the [Product Backlog](PRODUCT-BACKLOG.md) for planned features, priorities, acceptance criteria, and open decisions.
 
-All contributors are expected to follow the coding standards, branch naming conventions, and commit message guidelines outlined in [CONTRIBUTING.md](CONTRIBUTING.md).
+## Communication
 
-## Project Status
+Join the [RIO Discord server](https://discord.gg/jJTps5kC9F) for team discussions and coordination.
 
-**Status:** Initial Development
+## Status
 
-The project is currently in its initial development phase. Features and documentation will be expanded as development progresses.
+In development. Local setup instructions will be added once the application configuration has been verified.
