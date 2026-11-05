@@ -1,0 +1,54 @@
+@baseUrl = http://localhost:3000
+//API TESTS
+
+### 1. GET ALL FILMS
+GET {{baseUrl}}/api/films
+
+### GET FILM BY ID
+GET {{baseUrl}}/api/films/1
+
+
+
+### GET CITIES
+GET {{baseUrl}}/api/cities
+
+### GWT CITY BY ID
+GET {{baseUrl}}/api/cities/1
+
+
+
+### GET SCREEN BY ID
+GET {{baseUrl}}/api/screens/1
+
+### GET ALL SCREENS
+GET {{baseUrl}}/api/screens
+
+
+
+### GET SEATS FROM SCREEN ID 1 AND SCREENING ID 1
+GET {{baseUrl}}/api/seats?screenId=1&screeningId=1
+
+### GET SEATS FROM SCREEN ID 1
+GET {{baseUrl}}/api/seats?screenId=1
+
+
+
+### GET ALL SCREENINGS
+GET {{baseUrl}}/api/screenings
+
+### GET SCREENINGS BY CITY id
+GET {{baseUrl}}/api/screenings?cityId=1
+
+
+
+### GET PRICES
+GET {{baseUrl}}/api/prices
+
+
+
+### GET BOOKINGS ||| NOT READY YET
+GET {{baseUrl}}/api/bookings
+
+
+
+

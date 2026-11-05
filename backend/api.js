@@ -61,29 +61,64 @@ export default function(app) {
         }
     })
 
-//Get Layout
-
-    app.get('/api/layouts', async (req, res) =>{
+//get all screens
+    app.get('/api/screens', async (req, res) => {
         try{
-            const screenId = req.query.screenId;
-            const cityId = req.query.cityId
-            let query;
+            const cityId = req.query.cityId;
+            let query = `
+            SELECT screens.id,
+            screens.capacity,
+            screens.wheelchair_capacity,
+            screens.city_id,
+            cities.name AS city_name
+            FROM screens
+            JOIN cities ON screens.city_id = cities.id
+            `;
 
-            if(screenId){
-                query = await pool.query(`SELECT * FROM screens WHERE id = $1`, [screenId])
+
+            let params = [];
+            if(cityId){
+                query += ` WHERE screens.city_id = $1`
+                params.push(cityId)}
             
-            } else if(cityId){
-                query = await pool.query(`SELECT * FROM screens WHERE city_id = $1`, [cityId])
-            } else {
-                query = await pool.query(`SELECT * FROM screens`)
-            }
+                query += ` ORDER BY screens.id ASC`
 
-            res.status(200).json({success: true, data: query.rows})
+                    const queryResult = await pool.query(query, params)
+            res.status(200).json({success: true, data: queryResult.rows})
         }catch(error){
-            console.error('There was error while fetching layouts')
-            res.status(500).json({success: false, error: 'There was an inside error while fetching layouts'})
+            console.error('Error while fetching screens')
+            res.status(500).json({success: false, error: 'There was an internal error while fetching screens'})
         }
     })
+
+    //Get screen by id
+
+    app.get('/api/screens/:id', async (req, res) =>{
+        try{
+            const id = req.params.id;
+            //const cityId = req.query.cityId
+            let query = await pool.query(`
+                SELECT screens.id,
+                screens.capacity,
+                screens.wheelchair_capacity,
+                screens.city_id,
+                cities.name AS city_name
+                FROM screens
+                JOIN cities ON screens.city_id = cities.id
+                WHERE screens.id = $1`, [id]);
+
+            if(query.rows.length === 0){
+                return res.status(404).json({success: false, error: 'Screen not found'})
+            }
+
+            res.status(200).json({success: true, data: query.rows[0]})
+        }catch(error){
+            console.error('There was error while fetching screen')
+            res.status(500).json({success: false, error: 'There was an inside error while fetching screen'})
+        }
+    })
+
+
 
 
     //GET ALL FILMS
@@ -173,10 +208,12 @@ export default function(app) {
         screenings.screening_time,
         films.title AS film_title,
         screens.id AS screen_id,
-        screens.city_id
+        screens.city_id,
+        cities.name AS city_name
         FROM screenings
         JOIN films on screenings.film_id = films.Id
         JOIN screens on screenings.screen_id = screens.Id
+        JOIN cities ON screens.city_id = cities.id
         `
         let params = [];
 
@@ -218,6 +255,8 @@ export default function(app) {
     })
 
     
+// GET BOOKINGS ||||  NOT READY YET  ||||
+
     app.get('/api/bookings', async (req, res) => {
         try{
         const screeningId = req.query.screeningId;
@@ -260,3 +299,4 @@ export default function(app) {
 
     })
 }
+
