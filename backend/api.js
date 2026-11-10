@@ -255,7 +255,7 @@ export default function(app) {
     })
 
     
-// GET BOOKINGS ||||  NOT READY YET  ||||
+// GET BOOKINGS
 
     app.get('/api/bookings', async (req, res) => {
         try{
@@ -299,4 +299,32 @@ export default function(app) {
 
     })
 }
+
+
+app.delete('/api/bookings/:id', async (req, res)=>{
+    const client = await pool.connect();
+    try{
+        const bookingId = req.params.id;
+
+        const checkBookingId = await pool.query('SELECT * FROM bookings WHERE id = $1', [bookingId])
+        if(checkBookingId.rows.length === 0){
+            client.release();
+            return res.status(404).json({success: false, error: 'Booking not found'})
+        }
+    
+        await client.query('BEGIN');
+        await client.query('DELETE FROM tickets WHERE booking_id = $1', [bookingId])
+        await client.query('DELETE FROM bookings WHERE id = $1', [bookingId])
+        await client.query('COMMIT'); client.release();
+
+        res.status(200).json({success: true, message: `Booking with id of: ${bookingId} deleted`})
+    }catch(error){
+        await client.query('ROLLBACK');
+        client.release();
+
+        res.status(500).json({success: false, error: 'There was an internal error while deleting booking'})
+    }
+})
+
+
 
