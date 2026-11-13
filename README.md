@@ -37,6 +37,12 @@ In development. The customer frontend is not initialized yet.
 
 ## Backend development
 
+On the configured development machine, PostgreSQL data is retained in ignored
+`.local/postgres`. Start it using the [database guide](database/README.md), then
+run `npm start` from `backend/`. In another terminal, run
+`npm run verify:browsing` from `backend/` to verify both cities and all four
+screens against the running API. These commands use your ignored `.env`.
+
 Requires Node.js 22 and access to a PostgreSQL development database. From the
 repository root:
 
@@ -59,7 +65,9 @@ Stop with Ctrl+C; SIGINT/SIGTERM close HTTP connections and the database pool.
 These commands do not create tables or seed records. An empty PostgreSQL database
 can pass the connectivity check, but data endpoints require the schema and data.
 For repeatable isolated schema setup, read the [database guide](database/README.md).
-Browsing fixtures remain tracked in #52. Do not apply `backend/db.sql` blindly
+Install the synthetic browsing data with `npm run db:seed:browsing` after applying
+the schema. Run `npm run test:postgres` for all tests against an explicitly
+isolated local development connection. Do not apply `backend/db.sql` blindly
 to a shared database.
 
 `npm test` uses Node's built-in test runner and isolated HTTP servers with injected

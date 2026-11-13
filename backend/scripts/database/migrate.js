@@ -2,6 +2,7 @@ import { createHash } from "node:crypto";
 import { readFile, readdir } from "node:fs/promises";
 import {
   assertIsolatedDevelopment,
+  assertConnectedLocalTarget,
   createClient,
   DatabaseCommandError,
 } from "./connection.js";
@@ -46,20 +47,7 @@ export async function migrateDatabase({
   const client = createClient(databaseUrl);
   try {
     await client.connect();
-    // Recheck the actual server/database before issuing any DDL.
-    const target = (
-      await client.query(`
-      SELECT current_database() AS name, host(inet_server_addr()) AS address
-    `)
-    ).rows[0];
-    if (
-      target.name !== database ||
-      !["127.0.0.1", "::1"].includes(target.address)
-    ) {
-      throw new DatabaseCommandError(
-        "Connected database does not match the isolated local target",
-      );
-    }
+    await assertConnectedLocalTarget(client, database);
     await client.query("BEGIN");
     await client.query("SET LOCAL lock_timeout = '5s'");
     await client.query("SET LOCAL statement_timeout = '30s'");

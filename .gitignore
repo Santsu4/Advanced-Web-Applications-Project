@@ -25,3 +25,6 @@ build/
 # Ignore secrets
 k8s/secret.yaml
 secret.yaml
+
+# Isolated local PostgreSQL data and verification output
+.local/
