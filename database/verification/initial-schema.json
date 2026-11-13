@@ -1,0 +1,125 @@
+{
+  "verifiedOn": "2026-11-13",
+  "scope": "Disposable local PostgreSQL cluster; removed after verification. No shared database accessed.",
+  "postgresVersion": "17.0",
+  "baselineSha256": "529e97abf3bdae8c81beba62a986b08d3d3112fd01114dce61d186a3de0ce979",
+  "commands": [
+    "npm run db:inspect",
+    "npm run db:migrate:dev",
+    "npm run db:inspect",
+    "npm run db:migrate:dev",
+    "npm test"
+  ],
+  "before": {
+    "transactionReadOnly": "on",
+    "tables": [],
+    "missingApplicationTables": [
+      "bookings",
+      "cities",
+      "company_requests",
+      "films",
+      "invoices",
+      "prices",
+      "screenings",
+      "screens",
+      "seats",
+      "tickets",
+      "users"
+    ]
+  },
+  "after": {
+    "transactionReadOnly": "on",
+    "tables": [
+      {
+        "name": "bookings"
+      },
+      {
+        "name": "cities"
+      },
+      {
+        "name": "company_requests"
+      },
+      {
+        "name": "films"
+      },
+      {
+        "name": "invoices"
+      },
+      {
+        "name": "prices"
+      },
+      {
+        "name": "rio_schema_migrations"
+      },
+      {
+        "name": "screenings"
+      },
+      {
+        "name": "screens"
+      },
+      {
+        "name": "seats"
+      },
+      {
+        "name": "tickets"
+      },
+      {
+        "name": "users"
+      }
+    ],
+    "missingApplicationTables": [],
+    "rowCounts": {
+      "bookings": 0,
+      "cities": 0,
+      "company_requests": 0,
+      "films": 0,
+      "invoices": 0,
+      "prices": 0,
+      "screenings": 0,
+      "screens": 0,
+      "seats": 0,
+      "tickets": 0,
+      "users": 0
+    },
+    "foreignKeyCount": 13,
+    "checkConstraintCount": 9,
+    "primaryKeyCountIncludingLedger": 12,
+    "triggers": [
+      {
+        "table_name": "tickets",
+        "name": "trg_prevent_ceo_seat_booking",
+        "enabled": "O",
+        "definition": "CREATE TRIGGER trg_prevent_ceo_seat_booking BEFORE INSERT OR UPDATE ON public.tickets FOR EACH ROW EXECUTE FUNCTION prevent_ceo_seat_booking()"
+      },
+      {
+        "table_name": "seats",
+        "name": "trg_protect_ceo_seat_config",
+        "enabled": "O",
+        "definition": "CREATE TRIGGER trg_protect_ceo_seat_config BEFORE DELETE OR UPDATE ON public.seats FOR EACH ROW EXECUTE FUNCTION protect_ceo_seat_config()"
+      }
+    ],
+    "sessionTimezone": "Europe/Helsinki"
+  },
+  "firstRun": "Applied: 0001_initial_schema.sql",
+  "secondRun": "Schema is up to date; no migrations applied",
+  "tests": {
+    "tests": 18,
+    "pass": 18,
+    "fail": 0,
+    "skipped": 0
+  },
+  "testedBehaviors": [
+    "linked city/screen/film/screening/booking/ticket records and IDs survive rerun",
+    "constraints and existing flagged CEO-seat triggers reject invalid writes",
+    "concurrent runners apply once",
+    "failed SQL rolls back schema and ledger",
+    "edited migration checksum rejected",
+    "untracked legacy schema and records preserved"
+  ],
+  "remaining": [
+    "No shared database inspected or migrated",
+    "CEO trigger corrections remain #36",
+    "Physical inventory remains #51",
+    "Persistent browsing fixtures and API verification remain #52"
+  ]
+}
