@@ -52,3 +52,13 @@ GET {{baseUrl}}/api/bookings
 
 
 
+
+
+### SCREENINGS BY SCREEN (use IDs returned by the city/screen/film APIs)
+GET {{baseUrl}}/api/screenings?screenId=1
+
+### SCREENINGS BY CITY, SCREEN AND FILM (filters combine with AND)
+GET {{baseUrl}}/api/screenings?cityId=1&screenId=1&filmId=1
+
+### INVALID SCREEN FILTER (expected 400)
+GET {{baseUrl}}/api/screenings?screenId=1.5

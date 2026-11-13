@@ -85,14 +85,14 @@ a disposable PostgreSQL recipe and explains the migration target safeguards.
 Application setup lives in `backend/src/app.js` and has no listening side effect.
 Runtime orchestration lives in `backend/src/server.js`; `backend/server.js` loads
 the environment and handles process signals. Shared configuration is in
-`backend/src/config/`. Existing prototype SQL/routes remain in `backend/api.js`,
-with the pool passed in explicitly. New business logic should follow the feature
+`backend/src/config/`. Other prototype SQL/routes remain in `backend/api.js`, with the pool passed in
+explicitly; screening reads now follow the feature layers in
+`backend/src/features/screenings/`. See the [screening API contract](docs/API-SCREENINGS.md). New business logic should follow the feature
 boundaries in the architecture guide as those features are implemented.
 
 The existing Docker Compose/Kubernetes files remain deployment scaffolding:
 the backend container entrypoint and database environment names need the runtime
 integration tracked under #67. Use the commands above for this milestone.
-
 
 ## Customer frontend
 

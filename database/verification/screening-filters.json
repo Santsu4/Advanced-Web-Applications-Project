@@ -1,0 +1,156 @@
+{
+  "verifiedOn": "2026-11-13",
+  "scope": "Real Express process and retained isolated local M0 PostgreSQL data. Verification uses GET requests and read-only SQL; shared databases unchanged.",
+  "backendTests": {
+    "command": "npm run test:postgres",
+    "tests": 35,
+    "passed": 35,
+    "failed": 0,
+    "skipped": 0
+  },
+  "workflow": {
+    "transactionReadOnly": "on",
+    "timezone": "Europe/Helsinki",
+    "verifiedScreens": 4,
+    "verifiedScreenings": 8,
+    "examples": [
+      {
+        "city_id": 1,
+        "city_name": "Oulu",
+        "screen_id": 1,
+        "capacity": 100,
+        "wheelchair_capacity": 10,
+        "film_id": 1,
+        "film_title": "RIO demo: Northern Lights",
+        "film_marker": "rio-dev:browsing:northern-lights",
+        "screening_id": 1,
+        "local_time": "2026-11-14T18:00:00"
+      },
+      {
+        "city_id": 1,
+        "city_name": "Oulu",
+        "screen_id": 1,
+        "capacity": 100,
+        "wheelchair_capacity": 10,
+        "film_id": 2,
+        "film_title": "RIO demo: Lake Stories",
+        "film_marker": "rio-dev:browsing:lake-stories",
+        "screening_id": 2,
+        "local_time": "2026-11-14T20:00:00"
+      },
+      {
+        "city_id": 1,
+        "city_name": "Oulu",
+        "screen_id": 2,
+        "capacity": 200,
+        "wheelchair_capacity": 10,
+        "film_id": 1,
+        "film_title": "RIO demo: Northern Lights",
+        "film_marker": "rio-dev:browsing:northern-lights",
+        "screening_id": 3,
+        "local_time": "2026-11-14T18:00:00"
+      },
+      {
+        "city_id": 1,
+        "city_name": "Oulu",
+        "screen_id": 2,
+        "capacity": 200,
+        "wheelchair_capacity": 10,
+        "film_id": 2,
+        "film_title": "RIO demo: Lake Stories",
+        "film_marker": "rio-dev:browsing:lake-stories",
+        "screening_id": 4,
+        "local_time": "2026-11-14T20:00:00"
+      },
+      {
+        "city_id": 2,
+        "city_name": "Tampere",
+        "screen_id": 3,
+        "capacity": 100,
+        "wheelchair_capacity": 10,
+        "film_id": 1,
+        "film_title": "RIO demo: Northern Lights",
+        "film_marker": "rio-dev:browsing:northern-lights",
+        "screening_id": 5,
+        "local_time": "2026-11-14T18:00:00"
+      },
+      {
+        "city_id": 2,
+        "city_name": "Tampere",
+        "screen_id": 3,
+        "capacity": 100,
+        "wheelchair_capacity": 10,
+        "film_id": 2,
+        "film_title": "RIO demo: Lake Stories",
+        "film_marker": "rio-dev:browsing:lake-stories",
+        "screening_id": 6,
+        "local_time": "2026-11-14T20:00:00"
+      },
+      {
+        "city_id": 2,
+        "city_name": "Tampere",
+        "screen_id": 4,
+        "capacity": 200,
+        "wheelchair_capacity": 10,
+        "film_id": 1,
+        "film_title": "RIO demo: Northern Lights",
+        "film_marker": "rio-dev:browsing:northern-lights",
+        "screening_id": 7,
+        "local_time": "2026-11-14T18:00:00"
+      },
+      {
+        "city_id": 2,
+        "city_name": "Tampere",
+        "screen_id": 4,
+        "capacity": 200,
+        "wheelchair_capacity": 10,
+        "film_id": 2,
+        "film_title": "RIO demo: Lake Stories",
+        "film_marker": "rio-dev:browsing:lake-stories",
+        "screening_id": 8,
+        "local_time": "2026-11-14T20:00:00"
+      }
+    ]
+  },
+  "examples": [
+    {
+      "request": "/api/screenings?cityId=1&screenId=1&filmId=1",
+      "status": 200,
+      "body": {
+        "success": true,
+        "data": [
+          {
+            "id": 1,
+            "screening_time": "2026-11-14T16:00:00.000Z",
+            "film_id": 1,
+            "film_title": "RIO demo: Northern Lights",
+            "screen_id": 1,
+            "city_id": 1,
+            "city_name": "Oulu"
+          }
+        ]
+      }
+    },
+    {
+      "request": "/api/screenings?cityId=2&screenId=1",
+      "status": 200,
+      "body": {
+        "success": true,
+        "data": []
+      }
+    },
+    {
+      "request": "/api/screenings?screenId=1.5",
+      "status": 400,
+      "body": {
+        "success": false,
+        "error": "screenId must be a positive integer between 1 and 2147483647"
+      }
+    }
+  ],
+  "remaining": [
+    "Customer screening-selection controls remain #54/#25",
+    "Timezone-less schema remains; current development backend requires TZ=Europe/Helsinki",
+    "No seat availability, allocation or booking behavior changed"
+  ]
+}

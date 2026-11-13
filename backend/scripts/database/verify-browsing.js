@@ -131,17 +131,41 @@ export async function verifyBrowsing({ databaseUrl, baseUrl }) {
             `/api/screenings?cityId=${city.id}&filmId=${film.id}`,
           );
           const filmOnly = await get(`/api/screenings?filmId=${film.id}`);
+          const screenOnly = await get(`/api/screenings?screenId=${screen.id}`);
+          const completeFilter = await get(
+            `/api/screenings?cityId=${city.id}&screenId=${screen.id}&filmId=${film.id}`,
+          );
+          assert.ok(
+            screenOnly.every((row) => row.screen_id === screen.id),
+            "Screen filter must not return another screen",
+          );
+          assert.ok(
+            completeFilter.every(
+              (row) =>
+                row.city_id === city.id &&
+                row.screen_id === screen.id &&
+                row.film_id === film.id,
+            ),
+            "Complete filters must preserve all selected identities",
+          );
           assert.ok(
             filtered.every(
-              (row) => row.city_id === city.id && row.film_title === film.title,
+              (row) => row.city_id === city.id && row.film_id === film.id,
             ),
             "Combined filters must retain the selected city and film",
           );
           assert.ok(
-            filmOnly.every((row) => row.film_title === film.title),
+            filmOnly.every((row) => row.film_id === film.id),
             "Film filter must retain the selected film",
           );
-          for (const rows of [allScreenings, screenings, filtered, filmOnly]) {
+          for (const rows of [
+            allScreenings,
+            screenings,
+            filtered,
+            filmOnly,
+            screenOnly,
+            completeFilter,
+          ]) {
             const screening = rows.find(
               (row) => row.id === reference.screening_id,
             );
@@ -153,6 +177,7 @@ export async function verifyBrowsing({ databaseUrl, baseUrl }) {
             assert.equal(screening.city_id, city.id);
             assert.equal(screening.city_name, city.name);
             assert.equal(screening.film_title, film.title);
+            assert.equal(screening.film_id, film.id);
             assert.equal(
               helsinkiTime(screening.screening_time),
               reference.local_time,
@@ -166,6 +191,21 @@ export async function verifyBrowsing({ databaseUrl, baseUrl }) {
         }
       }
     }
+    const first = expected[0];
+    const otherCity = expected.find((row) => row.city_id !== first.city_id);
+    assert.deepEqual(
+      await get(
+        `/api/screenings?cityId=${otherCity.city_id}&screenId=${first.screen_id}`,
+      ),
+      [],
+      "Contradictory filters must return no screenings",
+    );
+    const malformed = await fetch(
+      url.origin + "/api/screenings?screenId=invalid",
+      { signal: AbortSignal.timeout(5000) },
+    );
+    assert.equal(malformed.status, 400);
+    assert.equal((await malformed.json()).success, false);
     return {
       transactionReadOnly: readOnly,
       timezone: "Europe/Helsinki",

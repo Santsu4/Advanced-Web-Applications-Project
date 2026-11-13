@@ -231,6 +231,7 @@ fixtures, database startup/shutdown and the complete current browsing path are
 verified. The local database remains available for development; the verification
 backend process was stopped.
 
-M0 does not include the React application, the missing screening `screenId`
-filter/`film_id` response field (#53), seats/availability/validation, prices,
-holds or payment. No shared/CSC database or deployed application was verified.
+M0 did not include the React application, seats/availability/validation, prices,
+holds or payment. Screening `screenId` filtering and stable `film_id` responses
+were subsequently added in #53; see the [screening API contract](../docs/API-SCREENINGS.md).
+No shared/CSC database or deployed application was verified.

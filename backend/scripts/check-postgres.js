@@ -18,6 +18,7 @@ try {
       TEST_DATABASE_URL: databaseUrl,
       TEST_MIGRATION_DATABASE_URL: databaseUrl,
       TEST_BROWSING_DATABASE_URL: databaseUrl,
+      TEST_SCREENINGS_DATABASE_URL: databaseUrl,
     },
   });
   const [code] = await once(child, "exit");
