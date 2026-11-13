@@ -33,7 +33,8 @@ Join the [RIO Discord server](https://discord.gg/jJTps5kC9F) for team discussion
 
 ## Status
 
-In development. The customer frontend is not initialized yet.
+In development. The customer React foundation displays live cinema locations.
+Screening and seat selection are still being implemented.
 
 ## Backend development
 
@@ -91,3 +92,19 @@ boundaries in the architecture guide as those features are implemented.
 The existing Docker Compose/Kubernetes files remain deployment scaffolding:
 the backend container entrypoint and database environment names need the runtime
 integration tracked under #67. Use the commands above for this milestone.
+
+
+## Customer frontend
+
+Start the backend, then run the following in another terminal from the repository
+root:
+
+```bash
+cd frontend
+npm ci
+cp -n .env.example .env
+npm run dev
+```
+
+Open `http://127.0.0.1:5173/`. See the [frontend guide](frontend/README.md) for
+API configuration, build/lint/test commands and verified scope.
