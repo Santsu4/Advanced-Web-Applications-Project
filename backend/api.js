@@ -1,3 +1,5 @@
+import { registerScreeningRoutes } from "./src/features/screenings/screeningsRoutes.js";
+
 export default function(app, pool) {
 
 
@@ -187,48 +189,8 @@ export default function(app, pool) {
 
     })
 
-    // GET SCREENINGS
-
-    app.get('/api/screenings', async (req, res)=>{
-    try{
-        const cityId = req.query.cityId;
-        const filmId = req.query.filmId;
-
-        let query = `
-        SELECT screenings.id,
-        screenings.screening_time,
-        films.title AS film_title,
-        screens.id AS screen_id,
-        screens.city_id,
-        cities.name AS city_name
-        FROM screenings
-        JOIN films on screenings.film_id = films.Id
-        JOIN screens on screenings.screen_id = screens.Id
-        JOIN cities ON screens.city_id = cities.id
-        `
-        let params = [];
-
-        if(filmId&&cityId){
-            query += ' WHERE screenings.film_id = $1 AND screens.city_id = $2'
-            params.push(filmId, cityId)
-        }else if(filmId) {
-             query += ' WHERE screenings.film_id = $1'
-            params.push(filmId)
-        }else if(cityId){
-            query += ' WHERE screens.city_id = $1'
-            params.push(cityId)
-        }
-
-        query += ` ORDER BY screenings.screening_time ASC`
-
-        const result = await pool.query(query, params)
-
-        res.status(200).json({success: true, data: result.rows})
-    }catch (error){
-        console.error('There was a error while fetching screenings')
-        res.status(500).json({success: false, error: 'There was an inside error while fetching screenings'})
-    }
-    })
+    // Screening reads are composed in the screenings feature.
+    registerScreeningRoutes(app, pool);
 
     // GET PRICES
 
