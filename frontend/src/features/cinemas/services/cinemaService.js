@@ -1,7 +1,19 @@
-import { apiGet } from "../../../shared/services/apiClient.js";
+import { ApiError, apiGet } from "../../../shared/services/apiClient.js";
 
 export async function getCities({ signal } = {}) {
-  const cities = await apiGet("/cities", { signal });
+  let cities;
+  try {
+    cities = await apiGet("/cities", { signal });
+  } catch (error) {
+    // Only the documented empty-city response is an empty result, not any 404.
+    if (
+      error instanceof ApiError &&
+      error.status === 404 &&
+      error.message === "No cities found"
+    )
+      return [];
+    throw error;
+  }
   if (
     !Array.isArray(cities) ||
     cities.some(

@@ -28,3 +28,6 @@ secret.yaml
 
 # Isolated local PostgreSQL data and verification output
 .local/
+
+# Frontend component-test artifacts
+.vitest/

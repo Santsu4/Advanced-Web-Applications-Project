@@ -40,9 +40,14 @@ npm run build
 npm run preview
 ```
 
-`npm run format` applies formatting. The focused tests use
-Node's built-in runner and a temporary HTTP server, without database credentials.
-They verify envelopes, HTTP errors, non-JSON errors, empty responses and aborts.
+`npm run format` applies formatting. `npm test` runs both suites:
+
+- `npm run test:unit`: 20 Node tests for transport and pure selection rules.
+- `npm run test:components`: 19 Vitest/Testing Library tests in a simulated DOM,
+  with controlled HTTP responses for loading, empty data, retry, focus and races.
+
+No database credentials are needed for frontend tests. The test dependencies are
+only development tools and are not included in the customer production bundle.
 The production bundle is generated in ignored `dist/`.
 
 `npm run preview` serves the built bundle locally on port 4173. Vite's local
@@ -103,8 +108,8 @@ because the selectors replace it. No checkout/account/staff pages or empty
 feature scaffolding were added. Request state is local; abandoned requests are
 aborted and their results ignored. Data from a previous request identity is
 hidden immediately when a parent choice changes. Loading, empty and error
-feedback plus retry are present as needed for these controls; broader failure,
-retry and out-of-order request test coverage remains #25.
+feedback plus retry are present as needed for these controls. #25 adds controlled
+failure, retry, focus and out-of-order response coverage as described below.
 
 ### Verification
 
@@ -114,7 +119,7 @@ Verified on 13 November 2026 against the actual M0 PostgreSQL development data:
 - City/screen/movie changes cleared their dependent controls and completed summary.
 - Tab followed City → Screen → Movie → Showtime; arrow keys and Enter selected
   a showtime. The selected values and summary matched the real API records.
-- Twenty frontend tests passed: eight transport tests and twelve selection tests
+- Twenty frontend unit tests passed: eight transport tests and twelve selection tests
   covering the complete city/capacity matrix, resets, eligible movies, ID-based
   deduplication, chronological sorting, expired/incompatible selections and
   Helsinki winter/summer/next-day formatting.
@@ -126,5 +131,48 @@ actual selected IDs, summaries, resets and keyboard checks. Run `npm test`,
 `npm run lint`, `npm run format:check` and `npm run build` to repeat code checks.
 
 Seat selection, prices, holds, payment, cross-page context and back navigation
-remain their separate items. #25 remains for full browsing request-state
-verification. A successful summary does not mean seats are reserved.
+remain their separate items. A successful summary does not mean seats are reserved.
+
+## Browsing request states (#25)
+
+Each request belongs to its current loader and retry attempt. Changing city or
+screen immediately hides data from the previous context; cleanup aborts the old
+request and ignores its eventual success or failure even if the transport ignores
+cancellation. Movie changes filter already-loaded screenings locally and do not
+launch another request.
+
+- Pending controls expose `aria-busy`, announce loading and keep invalid downstream
+  controls disabled. A new parent context starts fresh rather than inheriting an
+  old retry label.
+- Empty city/screen data and empty or past-only screenings have dedicated messages.
+  The existing backend uses `404` with `No cities found` for an empty city table;
+  only that documented error is normalized to an empty list. Other 404s and
+  network/server failures remain errors.
+- Failed reads offer a clearly named retry action. While retrying, the same button
+  remains focused and `aria-disabled` blocks duplicate activation. After success
+  it remains as “Refresh” for the current context so focus is not lost when the
+  status changes. Shift+Tab returns to its associated selector.
+- Retry does not select a different city, screen, film or showtime. Existing IDs
+  remain usable only if they still match eligible current data; otherwise controls
+  and the summary show no completed selection.
+- City/screen/movie changes retain focus on the control the user changed and clear
+  its downstream choices. No automatic focus jumps are introduced.
+
+The component suite exercises slow old responses arriving after current ones,
+late failures, unmount and React StrictMode cleanup, empty results, successful and
+repeated failed retries, duplicate retry blocking, and focus through changes.
+The deferred test transport deliberately ignores AbortSignal so these tests prove
+that late completions cannot overwrite the current state. Dates for future test
+screenings are generated relative to the test run.
+
+[Request-state verification](verification/browsing-request-states.json) records a
+real backend outage, failed retry, backend restart, recovery without automatic
+selection, preserved keyboard focus and a completed Tampere screening summary.
+Those checks used the actual local Express/PostgreSQL development data. The
+controlled slow/empty cases run in component tests without changing the database.
+
+Verified commands: `npm ci`, `npm test`, `npm run lint`,
+`npm run format:check`, and `npm run build`. Complete browser/device accessibility
+coverage, seat availability and booking are separate work. The DOM test tools
+are configured through [Vitest](https://vitest.dev/guide/) and
+[Testing Library](https://testing-library.com/docs/react-testing-library/setup/).
