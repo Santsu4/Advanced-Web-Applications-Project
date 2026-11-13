@@ -1,0 +1,297 @@
+:root {
+  font-family: "Avenir Next", Avenir, "Segoe UI", sans-serif;
+  color: #f2e8d3;
+  background: #100f10;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  line-height: 1.5;
+}
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+}
+a {
+  color: inherit;
+}
+button {
+  font: inherit;
+}
+a:focus-visible,
+button:focus-visible {
+  outline: 3px solid #efc56f;
+  outline-offset: 5px;
+}
+.shell {
+  width: min(1160px, calc(100% - 64px));
+  margin-inline: auto;
+}
+.skip-link {
+  position: absolute;
+  top: -100px;
+  left: 20px;
+  padding: 12px;
+  background: white;
+  z-index: 2;
+}
+.skip-link:focus {
+  top: 12px;
+}
+.site-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-block: 28px;
+  border-bottom: 1px solid #3d3030;
+}
+.wordmark {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  font-size: 38px;
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: -3px;
+  text-decoration: none;
+}
+.wordmark span {
+  font-weight: 500;
+  font-size: 13px;
+  letter-spacing: 0.08em;
+}
+.header-link {
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 600;
+}
+.header-link span {
+  margin-left: 18px;
+}
+.hero {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  align-items: center;
+  gap: 48px;
+  padding-block: 68px 72px;
+}
+.eyebrow {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  margin: 0 0 18px;
+}
+h1 {
+  font-size: clamp(46px, 5.6vw, 74px);
+  letter-spacing: -0.055em;
+  line-height: 1.06;
+  font-weight: 600;
+  margin: 0;
+}
+.intro {
+  color: #c2b3a3;
+  font-size: 16px;
+  line-height: 1.7;
+  margin-block: 26px;
+}
+.primary-link {
+  display: inline-flex;
+  gap: 40px;
+  align-items: center;
+  padding: 14px 20px;
+  background: #b41f35;
+  color: white;
+  font-size: 14px;
+  font-weight: 600;
+  border-radius: 4px;
+  text-decoration: none;
+}
+.primary-link:hover {
+  background: #d52d45;
+}
+.cinema-art {
+  position: relative;
+  background: #3a0d17;
+  min-height: 365px;
+  padding: 28px;
+  border-radius: 8px;
+  overflow: hidden;
+}
+.art-frame {
+  border: 1px solid #aa7d3c;
+  padding: 22px 24px;
+  height: 280px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+.art-star {
+  color: #e8bc64;
+  font-size: 88px;
+  line-height: 0.8;
+}
+.art-caption {
+  font-family: Georgia, serif;
+  font-size: 53px;
+  line-height: 0.95;
+  letter-spacing: -0.04em;
+}
+.art-note {
+  display: block;
+  margin-top: 12px;
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+}
+.cinemas-section {
+  padding-block: 34px 70px;
+  border-top: 1px solid #3d3030;
+  scroll-margin-top: 20px;
+}
+.section-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 20px;
+  margin-bottom: 26px;
+}
+.section-heading .eyebrow {
+  margin-bottom: 7px;
+}
+h2 {
+  font-size: 30px;
+  letter-spacing: -0.04em;
+  font-weight: 600;
+  margin: 0;
+}
+.section-heading > p {
+  color: #c2b3a3;
+  font-size: 13px;
+  margin: 0 0 4px;
+}
+.cinema-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.cinema-card {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  border: 1px solid #49382d;
+  border-radius: 6px;
+  padding: 23px;
+  background: #1c1819;
+}
+.cinema-number {
+  font-size: 11px;
+  color: #bca98b;
+  align-self: flex-start;
+  margin-top: 6px;
+}
+h3 {
+  font-size: 25px;
+  line-height: 1.2;
+  letter-spacing: -0.03em;
+  font-weight: 500;
+  margin: 0 0 5px;
+}
+.cinema-card p {
+  margin: 0;
+  color: #bca98b;
+  font-size: 12px;
+}
+.cinema-mark {
+  margin-left: auto;
+  font-size: 35px;
+  color: #e8bc64;
+}
+.request-message {
+  padding: 24px;
+  background: #27191c;
+  border-radius: 6px;
+}
+.request-message p {
+  margin-top: 0;
+}
+.request-message button {
+  background: #b41f35;
+  border: 0;
+  border-radius: 4px;
+  padding: 10px 16px;
+  color: white;
+  cursor: pointer;
+}
+.site-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  border-top: 1px solid #3d3030;
+  padding-block: 22px;
+  color: #bca98b;
+}
+.footer-brand {
+  font-weight: 800;
+  font-size: 22px;
+  letter-spacing: -1px;
+  color: #f2e8d3;
+}
+.site-footer p {
+  font-size: 11px;
+}
+@media (max-width: 700px) {
+  .shell {
+    width: calc(100% - 40px);
+  }
+  .site-header {
+    padding-block: 22px;
+  }
+  .hero {
+    grid-template-columns: 1fr;
+    padding-block: 42px;
+    gap: 30px;
+  }
+  .cinema-art {
+    min-height: 250px;
+    padding: 20px;
+  }
+  .art-frame {
+    height: 190px;
+    flex-direction: row;
+    align-items: flex-end;
+  }
+  .art-star {
+    align-self: flex-start;
+  }
+  .art-caption {
+    font-size: 43px;
+  }
+  .section-heading {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .cinema-list {
+    grid-template-columns: 1fr;
+  }
+  .cinemas-section {
+    padding-bottom: 42px;
+  }
+}
+
+.wordmark,
+.footer-brand,
+.eyebrow,
+.cinema-card h3 {
+  color: #e8bc64;
+}
+.header-link:hover {
+  color: #e8bc64;
+}
