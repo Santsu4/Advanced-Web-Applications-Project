@@ -8,22 +8,32 @@ import {
 } from "../utils/selection.js";
 
 function RequestFeedback({ request, subject }) {
-  if (request.status === "loading")
-    return (
-      <p className="field-feedback" role="status">
-        Loading {subject}…
-      </p>
-    );
-  if (request.status === "error")
-    return (
-      <div className="field-feedback">
-        <p role="alert">We couldn’t load {subject}.</p>
-        <button className="retry-button" type="button" onClick={request.retry}>
-          Try again
+  const pending = request.status === "loading";
+  const failed = request.status === "error";
+  if (!pending && !failed && !request.hasRetried) return null;
+  const message = failed
+    ? `We couldn’t load ${subject}.`
+    : pending
+      ? `${request.hasRetried ? "Retrying" : "Loading"} ${subject}…`
+      : `Updated ${subject}.`;
+  return (
+    <div className="field-feedback">
+      <p role={failed ? "alert" : "status"}>{message}</p>
+      {(failed || request.hasRetried) && (
+        <button
+          className="retry-button"
+          type="button"
+          aria-label={`${pending ? "Retrying" : failed ? "Retry" : "Refresh"} ${subject}`}
+          aria-disabled={pending}
+          onClick={() => {
+            if (!pending) request.retry();
+          }}
+        >
+          {pending ? "Retrying…" : failed ? "Try again" : "Refresh"}
         </button>
-      </div>
-    );
-  return null;
+      )}
+    </div>
+  );
 }
 
 export default function ScreeningSelection() {
@@ -78,6 +88,7 @@ export default function ScreeningSelection() {
           <label htmlFor="city">1. City</label>
           <select
             id="city"
+            aria-busy={requests.cities.status === "loading"}
             value={selection.cityId ?? ""}
             disabled={
               requests.cities.status !== "ready" || !requests.cities.data.length
@@ -103,6 +114,7 @@ export default function ScreeningSelection() {
           <label htmlFor="screen">2. Screen</label>
           <select
             id="screen"
+            aria-busy={requests.screens.status === "loading"}
             value={options.screen?.id ?? ""}
             disabled={
               !options.city ||
@@ -133,6 +145,7 @@ export default function ScreeningSelection() {
           <label htmlFor="film">3. Movie</label>
           <select
             id="film"
+            aria-busy={requests.screenings.status === "loading"}
             value={options.film?.id ?? ""}
             disabled={
               !options.screen || !hasScreenings || !options.films.length

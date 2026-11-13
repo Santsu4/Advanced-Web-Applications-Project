@@ -3,8 +3,9 @@ import { getCities, getScreens } from "../../cinemas/services/cinemaService.js";
 import { getScreenings } from "../services/screeningService.js";
 
 function useOptions(load, enabled = true) {
-  const [attempt, setAttempt] = useState(0);
+  const [retryState, setRetryState] = useState(null);
   const [result, setResult] = useState(null);
+  const attempt = retryState?.load === load ? retryState.attempt : 0;
   useEffect(() => {
     if (!enabled) return;
     const controller = new AbortController();
@@ -24,7 +25,12 @@ function useOptions(load, enabled = true) {
   return {
     status: !enabled ? "idle" : current ? result.status : "loading",
     data: current ? result.data : [],
-    retry: () => setAttempt((value) => value + 1),
+    hasRetried: attempt > 0,
+    retry: () =>
+      setRetryState((previous) => ({
+        load,
+        attempt: previous?.load === load ? previous.attempt + 1 : 1,
+      })),
   };
 }
 

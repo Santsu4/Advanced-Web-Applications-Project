@@ -1,0 +1,62 @@
+{
+  "verifiedOn": "2026-11-13",
+  "unitTests": 20,
+  "componentTests": 19,
+  "failedTests": 0,
+  "liveRequestChecks": [
+    {
+      "cityDisabled": true,
+      "downstreamDisabled": true,
+      "errorShown": true,
+      "focusedAction": "Retry cities",
+      "stage": "retry while backend remains unavailable",
+      "summaryAbsent": true
+    },
+    {
+      "cityEnabled": true,
+      "errorShown": false,
+      "focusedAction": "Refresh cities",
+      "selectedCity": "",
+      "selectedScreening": "",
+      "stage": "retry after backend recovery",
+      "summaryAbsent": true
+    }
+  ],
+  "keyboardAfterRecovery": "city",
+  "recoveredSelection": {
+    "cityId": 2,
+    "filmId": 2,
+    "screenId": 4,
+    "screeningId": 8,
+    "summary": "YOUR VISIT\n\nYour screening\nCITY\nTampere\nSCREEN\n200-seat screen\nMOVIE\nRIO demo: Lake Stories\nSHOWTIME\nSat, 14 Nov 2026, 20:00 (Helsinki time)\n\nScreening selected. Seats have not been reserved."
+  },
+  "controlledComponentCases": [
+    "pending dependent controls",
+    "empty city array and documented empty-city 404",
+    "other failures remain errors",
+    "empty screens and empty/past-only screenings",
+    "retry success and repeated failure preserve focus",
+    "duplicate retry blocked",
+    "slow old city response arrives after current response",
+    "slow old screen response cannot overwrite selected movie/showtime",
+    "late stale failure ignored",
+    "upstream changes preserve focus and clear children",
+    "unmount and StrictMode cancellation",
+    "no silent replacement after refresh/retry",
+    "retry history does not leak into a new city request"
+  ],
+  "remaining": [
+    "No seat inventory or booking behavior changed",
+    "No pricing, payment or deployment implementation"
+  ],
+  "totalTests": 39,
+  "realApiCrossCheck": {
+    "request": "/api/screenings?cityId=2&screenId=4&filmId=2",
+    "status": 200,
+    "screeningId": 8,
+    "cityId": 2,
+    "screenId": 4,
+    "filmId": 2,
+    "summaryMatches": true
+  }
+}

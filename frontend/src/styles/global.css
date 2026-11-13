@@ -350,3 +350,8 @@ h3 {
     grid-template-columns: 1fr;
   }
 }
+
+.retry-button[aria-disabled="true"] {
+  opacity: 0.65;
+  cursor: wait;
+}

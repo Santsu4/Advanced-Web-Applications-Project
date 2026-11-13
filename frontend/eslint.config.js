@@ -29,6 +29,10 @@ export default [
     languageOptions: { globals: globals.browser },
   },
   {
+    files: ["tests/**/*.jsx"],
+    languageOptions: { globals: { ...globals.node, ...globals.browser } },
+  },
+  {
     files: ["*.js", "tests/**/*.js"],
     languageOptions: { globals: globals.node },
   },
