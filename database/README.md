@@ -115,7 +115,122 @@ This baseline is the existing schema, not the final seating design:
   known gaps (including ordinary-seat deletion suppression and seat relocation)
   remain for #36. Trigger presence does not prove the final CEO requirement.
 - Physical columns, complete inventories and their safeguards remain #51/#36.
-- No city, screen, movie or future-showtime fixtures are installed here. Durable
-  local browsing data and live API workflow verification remain #52.
+- The initial schema migration installs no browsing records. The separate #52
+  fixture command below supplies synthetic development data.
 - Shared/CSC schema state has not been inspected or changed. Production adoption,
   rollout and database roles remain separate work.
+
+## Browsing fixtures and running the backend (#52)
+
+The configured development machine now has a dedicated PostgreSQL cluster in
+ignored `.local/postgres`, listening on loopback port 55452, with database and
+role `rio_dev`. It uses password authentication. Its generated connection URL is
+stored only in ignored `backend/.env`, alongside `FRONTEND_URL`,
+`RIO_DATABASE_MODE=isolated-development`, and `TZ=Europe/Helsinki`.
+It was created separately from the installed PostgreSQL service and from CSC.
+
+From the repository root, check/start/stop this cluster with:
+
+```bash
+/Library/PostgreSQL/17/bin/pg_ctl -D "$PWD/.local/postgres" status
+/Library/PostgreSQL/17/bin/pg_ctl -D "$PWD/.local/postgres" -l "$PWD/.local/postgres.log" -w start
+/Library/PostgreSQL/17/bin/pg_ctl -D "$PWD/.local/postgres" -m fast -w stop
+```
+
+Use `start` only when it is stopped. Data survives stopping the server.
+Start the database before running the backend or PostgreSQL checks.
+
+For a new checkout, provision a separate local database. On macOS with the same
+PostgreSQL installation, run the following from the repository root, choosing
+an unused port if 55452 is occupied. `initdb` refuses to overwrite a nonempty
+cluster directory. The commands prompt for the development role password;
+choose a password and put its URL-encoded value in your ignored `.env`.
+
+```bash
+mkdir -p .local
+/Library/PostgreSQL/17/bin/initdb -D "$PWD/.local/postgres" -U rio_dev -A scram-sha-256 -W --no-locale --encoding=UTF8
+cat >> .local/postgres/postgresql.conf <<'CONFIG'
+listen_addresses = '127.0.0.1'
+port = 55452
+unix_socket_directories = ''
+CONFIG
+/Library/PostgreSQL/17/bin/pg_ctl -D "$PWD/.local/postgres" -l "$PWD/.local/postgres.log" -w start
+/Library/PostgreSQL/17/bin/createdb -h 127.0.0.1 -p 55452 -U rio_dev -W rio_dev
+cd backend
+cp -n .env.example .env
+```
+
+Edit `.env` to use the new database and password, for example
+`DATABASE_URL=postgresql://rio_dev:your-url-encoded-password@127.0.0.1:55452/rio_dev`.
+Keep the frontend origin `http://localhost:5173`, the isolated-development mode,
+and the Helsinki timezone. Then, from `backend/`:
+
+```bash
+npm ci
+npm run db:inspect
+npm run db:migrate:dev
+npm run db:seed:browsing
+npm run db:inspect
+npm run test:postgres
+npm start
+```
+
+With the backend running, open another terminal in `backend/` and run:
+
+```bash
+npm run verify:browsing
+```
+
+The verifier uses `API_BASE_URL` when provided; otherwise it uses localhost and
+`PORT` from `.env` (3000 by default). It makes GET requests and compares returned
+IDs with a read-only PostgreSQL snapshot. It checks city/screen/film detail and
+list routes plus existing city, film and combined screening filters. All four
+screens must have both future demo films. It does not generate records or seats.
+
+`npm run test:postgres` reads the ignored local configuration, enforces the same
+isolated-target guard, and enables all PostgreSQL test suites. The development
+role must have `CREATEDB` for uniquely named disposable test databases. The local
+cluster role created by `initdb` has this permission. The test databases are
+removed at the end; browsing records in `rio_dev` are retained. Plain `npm test`
+still runs checks without a database and skips integration tests unless their
+explicit connection variables are provided.
+
+### Fixture meanings and reruns
+
+Fixture definitions live in `database/seeds/browsing.js`:
+
+- Oulu and Tampere each have one 100-seat screen and one 200-seat screen.
+- `wheelchair_capacity=10` is screen metadata; it is not proof of ten generated
+  wheelchair places. Seat inventory remains empty until #51.
+- Two synthetic movies have `metadata_api_id` markers beginning with
+  `rio-dev:browsing:`. These markers are fixture identifiers, not external movie
+  provider identifiers or real cinema listings.
+- Each screen gets both demo films. Newly needed screenings are tomorrow at
+  18:00/20:00 in Europe/Helsinki, calculated from PostgreSQL's clock.
+- Existing cities are matched by unique name, screens by city/capacity, and demo
+  films by marker. Database-generated IDs are used throughout; ID 1 is not assumed.
+- Reruns reuse the earliest future screening for each screen/demo film. They do
+  not rewrite titles, move showtimes, delete old screenings or alter bookings.
+  When all matching shows are past, a new future show is appended. History grows
+  deliberately; there is no automatic cleanup or reset command.
+- Duplicate city/capacity screens, duplicate film markers, or incompatible
+  wheelchair metadata cause the whole seed transaction to roll back for review.
+  Schema setup must already be applied. The local write guard and advisory lock
+  are shared with migrations. Existing unrelated records are preserved.
+
+The stored timestamps still lack a timezone. Fixture values represent Helsinki
+wall time; run the current backend with `TZ=Europe/Helsinki` so its existing
+PostgreSQL parser produces matching API instants. The verifier checks this
+conversion. This local convention does not resolve the permanent timestamp
+migration/API contract, which remains #53. No API response shape changes here.
+
+[Browsing verification evidence](verification/browsing.json) records the actual
+read-only before/after inspection, a real CLI backend check for all eight future
+screenings, and 25 passing tests with no skips on 13 November 2026. Repeatable
+fixtures, database startup/shutdown and the complete current browsing path are
+verified. The local database remains available for development; the verification
+backend process was stopped.
+
+M0 does not include the React application, the missing screening `screenId`
+filter/`film_id` response field (#53), seats/availability/validation, prices,
+holds or payment. No shared/CSC database or deployed application was verified.

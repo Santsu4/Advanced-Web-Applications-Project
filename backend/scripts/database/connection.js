@@ -53,3 +53,19 @@ export function reportDatabaseError(error) {
   );
   process.exitCode = 1;
 }
+
+export async function assertConnectedLocalTarget(client, database) {
+  const target = (
+    await client.query(
+      "SELECT current_database() AS name, host(inet_server_addr()) AS address",
+    )
+  ).rows[0];
+  if (
+    target.name !== database ||
+    !["127.0.0.1", "::1"].includes(target.address)
+  ) {
+    throw new DatabaseCommandError(
+      "Connected database does not match the isolated local target",
+    );
+  }
+}

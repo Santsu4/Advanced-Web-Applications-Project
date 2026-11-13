@@ -1,0 +1,152 @@
+{
+  "verifiedOn": "2026-11-13",
+  "scope": "Password-authenticated isolated local PostgreSQL; no shared database accessed. Development data retained in ignored .local/postgres.",
+  "postgresVersion": "17.0",
+  "before": {
+    "transactionReadOnly": "on",
+    "tables": []
+  },
+  "migration": "Applied: 0001_initial_schema.sql",
+  "seedRerunPreservedManifest": true,
+  "after": {
+    "transactionReadOnly": "on",
+    "missingTables": [],
+    "rowCounts": {
+      "bookings": 0,
+      "cities": 2,
+      "company_requests": 0,
+      "films": 2,
+      "invoices": 0,
+      "prices": 0,
+      "screenings": 8,
+      "screens": 4,
+      "seats": 0,
+      "tickets": 0,
+      "users": 0
+    }
+  },
+  "apiVerification": {
+    "transactionReadOnly": "on",
+    "timezone": "Europe/Helsinki",
+    "verifiedScreens": 4,
+    "verifiedScreenings": 8,
+    "examples": [
+      {
+        "city_id": 1,
+        "city_name": "Oulu",
+        "screen_id": 1,
+        "capacity": 100,
+        "wheelchair_capacity": 10,
+        "film_id": 1,
+        "film_title": "RIO demo: Northern Lights",
+        "film_marker": "rio-dev:browsing:northern-lights",
+        "screening_id": 1,
+        "local_time": "2026-11-14T18:00:00"
+      },
+      {
+        "city_id": 1,
+        "city_name": "Oulu",
+        "screen_id": 1,
+        "capacity": 100,
+        "wheelchair_capacity": 10,
+        "film_id": 2,
+        "film_title": "RIO demo: Lake Stories",
+        "film_marker": "rio-dev:browsing:lake-stories",
+        "screening_id": 2,
+        "local_time": "2026-11-14T20:00:00"
+      },
+      {
+        "city_id": 1,
+        "city_name": "Oulu",
+        "screen_id": 2,
+        "capacity": 200,
+        "wheelchair_capacity": 10,
+        "film_id": 1,
+        "film_title": "RIO demo: Northern Lights",
+        "film_marker": "rio-dev:browsing:northern-lights",
+        "screening_id": 3,
+        "local_time": "2026-11-14T18:00:00"
+      },
+      {
+        "city_id": 1,
+        "city_name": "Oulu",
+        "screen_id": 2,
+        "capacity": 200,
+        "wheelchair_capacity": 10,
+        "film_id": 2,
+        "film_title": "RIO demo: Lake Stories",
+        "film_marker": "rio-dev:browsing:lake-stories",
+        "screening_id": 4,
+        "local_time": "2026-11-14T20:00:00"
+      },
+      {
+        "city_id": 2,
+        "city_name": "Tampere",
+        "screen_id": 3,
+        "capacity": 100,
+        "wheelchair_capacity": 10,
+        "film_id": 1,
+        "film_title": "RIO demo: Northern Lights",
+        "film_marker": "rio-dev:browsing:northern-lights",
+        "screening_id": 5,
+        "local_time": "2026-11-14T18:00:00"
+      },
+      {
+        "city_id": 2,
+        "city_name": "Tampere",
+        "screen_id": 3,
+        "capacity": 100,
+        "wheelchair_capacity": 10,
+        "film_id": 2,
+        "film_title": "RIO demo: Lake Stories",
+        "film_marker": "rio-dev:browsing:lake-stories",
+        "screening_id": 6,
+        "local_time": "2026-11-14T20:00:00"
+      },
+      {
+        "city_id": 2,
+        "city_name": "Tampere",
+        "screen_id": 4,
+        "capacity": 200,
+        "wheelchair_capacity": 10,
+        "film_id": 1,
+        "film_title": "RIO demo: Northern Lights",
+        "film_marker": "rio-dev:browsing:northern-lights",
+        "screening_id": 7,
+        "local_time": "2026-11-14T18:00:00"
+      },
+      {
+        "city_id": 2,
+        "city_name": "Tampere",
+        "screen_id": 4,
+        "capacity": 200,
+        "wheelchair_capacity": 10,
+        "film_id": 2,
+        "film_title": "RIO demo: Lake Stories",
+        "film_marker": "rio-dev:browsing:lake-stories",
+        "screening_id": 8,
+        "local_time": "2026-11-14T20:00:00"
+      }
+    ]
+  },
+  "tests": {
+    "tests": 25,
+    "pass": 25,
+    "fail": 0,
+    "skipped": 0
+  },
+  "deferred": [
+    "Screen filtering and film_id in screening responses (#53) remain unimplemented",
+    "No generated seats or selection validation (#51/#27)",
+    "No frontend, holds, payments, or production/shared database verification"
+  ],
+  "databaseRestartPreservedData": true,
+  "commands": [
+    "npm run db:inspect",
+    "npm run db:migrate:dev",
+    "npm run db:seed:browsing (twice)",
+    "npm run test:postgres",
+    "pg_ctl stop/start",
+    "npm run verify:browsing"
+  ]
+}
