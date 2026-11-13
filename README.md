@@ -43,7 +43,7 @@ repository root:
 ```bash
 cd backend
 npm ci
-cp .env.example .env
+cp -n .env.example .env
 # Edit .env with your development database connection and frontend origin.
 npm test
 npm run dev
@@ -58,8 +58,9 @@ Stop with Ctrl+C; SIGINT/SIGTERM close HTTP connections and the database pool.
 
 These commands do not create tables or seed records. An empty PostgreSQL database
 can pass the connectivity check, but data endpoints require the schema and data.
-Repeatable isolated schema setup and browsing fixtures are tracked in #39/#52;
-do not apply `backend/db.sql` blindly to a shared database.
+For repeatable isolated schema setup, read the [database guide](database/README.md).
+Browsing fixtures remain tracked in #52. Do not apply `backend/db.sql` blindly
+to a shared database.
 
 `npm test` uses Node's built-in test runner and isolated HTTP servers with injected
 database doubles. It checks configuration, existing route response contracts,
@@ -67,7 +68,10 @@ CORS, startup failures and shutdown; it does not prove a live schema is correct.
 The two PostgreSQL integration checks run when `TEST_DATABASE_URL` is explicitly
 set to a development connection URL before `npm test`; otherwise they are skipped.
 They check real connectivity and a CLI request/shutdown without creating tables
-or records.
+or records. Schema migration tests additionally require
+`TEST_MIGRATION_DATABASE_URL`; they create and remove dedicated test databases,
+and require a local development role with `CREATEDB`. The database guide provides
+a disposable PostgreSQL recipe and explains the migration target safeguards.
 
 Application setup lives in `backend/src/app.js` and has no listening side effect.
 Runtime orchestration lives in `backend/src/server.js`; `backend/server.js` loads
