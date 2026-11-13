@@ -12,3 +12,22 @@ export async function getCities({ signal } = {}) {
   }
   return cities;
 }
+
+export async function getScreens(cityId, { signal } = {}) {
+  const screens = await apiGet(
+    `/screens?${new URLSearchParams({ cityId: String(cityId) })}`,
+    { signal },
+  );
+  if (
+    !Array.isArray(screens) ||
+    screens.some(
+      (screen) =>
+        !Number.isInteger(screen.id) ||
+        !Number.isInteger(screen.city_id) ||
+        !Number.isInteger(screen.capacity),
+    )
+  ) {
+    throw new Error("Unexpected screen data");
+  }
+  return screens;
+}

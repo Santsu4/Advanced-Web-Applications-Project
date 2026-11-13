@@ -1,4 +1,4 @@
-import CinemaLocations from "../features/cinemas/components/CinemaLocations.jsx";
+import ScreeningSelection from "../features/screenings/components/ScreeningSelection.jsx";
 
 export default function HomePage() {
   return (
@@ -11,7 +11,7 @@ export default function HomePage() {
           RIO<span>cinema</span>
         </a>
         <a className="header-link" href="#cinemas">
-          Our cinemas <span aria-hidden="true">↗</span>
+          Find a screening <span aria-hidden="true">↗</span>
         </a>
       </header>
       <main id="main" className="shell">
@@ -28,7 +28,7 @@ export default function HomePage() {
               Find your local RIO cinema.
             </p>
             <a className="primary-link" href="#cinemas">
-              Find your cinema <span aria-hidden="true">↓</span>
+              Find a screening <span aria-hidden="true">↓</span>
             </a>
           </div>
           <div className="cinema-art" aria-hidden="true">
@@ -43,7 +43,7 @@ export default function HomePage() {
             <span className="art-note">Lights down. Stories on.</span>
           </div>
         </section>
-        <CinemaLocations />
+        <ScreeningSelection />
       </main>
       <footer className="site-footer shell">
         <span className="footer-brand">RIO</span>

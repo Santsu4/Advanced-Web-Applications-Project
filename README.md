@@ -33,8 +33,8 @@ Join the [RIO Discord server](https://discord.gg/jJTps5kC9F) for team discussion
 
 ## Status
 
-In development. The customer React foundation displays live cinema locations.
-Screening and seat selection are still being implemented.
+In development. Customers can choose a city, screen, movie and showtime using
+live data. Seat selection and booking remain under development.
 
 ## Backend development
 

@@ -1,0 +1,90 @@
+{
+  "verifiedOn": "2026-11-13",
+  "scope": "Real browser → Vite proxy → Express → isolated PostgreSQL M0 fixtures",
+  "tests": {
+    "total": 20,
+    "passed": 20,
+    "failed": 0
+  },
+  "completedSelections": [
+    {
+      "cityId": 1,
+      "filmId": 1,
+      "screenId": 1,
+      "screeningId": 1,
+      "summary": "YOUR VISIT\n\nYour screening\nCITY\nOulu\nSCREEN\n100-seat screen\nMOVIE\nRIO demo: Northern Lights\nSHOWTIME\nSat, 14 Nov 2026, 18:00 (Helsinki time)\n\nScreening selected. Seats have not been reserved."
+    },
+    {
+      "cityId": 1,
+      "filmId": 2,
+      "screenId": 2,
+      "screeningId": 4,
+      "summary": "YOUR VISIT\n\nYour screening\nCITY\nOulu\nSCREEN\n200-seat screen\nMOVIE\nRIO demo: Lake Stories\nSHOWTIME\nSat, 14 Nov 2026, 20:00 (Helsinki time)\n\nScreening selected. Seats have not been reserved."
+    },
+    {
+      "cityId": 2,
+      "filmId": 1,
+      "screenId": 3,
+      "screeningId": 5,
+      "summary": "YOUR VISIT\n\nYour screening\nCITY\nTampere\nSCREEN\n100-seat screen\nMOVIE\nRIO demo: Northern Lights\nSHOWTIME\nSat, 14 Nov 2026, 18:00 (Helsinki time)\n\nScreening selected. Seats have not been reserved."
+    },
+    {
+      "cityId": 2,
+      "filmId": 2,
+      "screenId": 4,
+      "screeningId": 8,
+      "summary": "YOUR VISIT\n\nYour screening\nCITY\nTampere\nSCREEN\n200-seat screen\nMOVIE\nRIO demo: Lake Stories\nSHOWTIME\nSat, 14 Nov 2026, 20:00 (Helsinki time)\n\nScreening selected. Seats have not been reserved."
+    }
+  ],
+  "resetChecks": [
+    "Screen change cleared movie/showtime",
+    "City change cleared screen/movie/showtime",
+    "Screen change cleared movie/showtime",
+    "Screen change cleared movie/showtime",
+    "Movie change cleared showtime and completed summary"
+  ],
+  "keyboardChecks": [
+    "1. City → screen",
+    "2. Screen → film",
+    "3. Movie → showtime",
+    "Arrow keys and Enter selected Sat, 14 Nov 2026, 18:00"
+  ],
+  "remaining": [
+    "Seat selection and booking are outside #54",
+    "Broader request failure/retry/stale-response coverage remains #25"
+  ],
+  "apiCrossChecks": [
+    {
+      "screeningId": 1,
+      "cityId": 1,
+      "screenId": 1,
+      "filmId": 1,
+      "capacity": 100,
+      "matched": true
+    },
+    {
+      "screeningId": 4,
+      "cityId": 1,
+      "screenId": 2,
+      "filmId": 2,
+      "capacity": 200,
+      "matched": true
+    },
+    {
+      "screeningId": 5,
+      "cityId": 2,
+      "screenId": 3,
+      "filmId": 1,
+      "capacity": 100,
+      "matched": true
+    },
+    {
+      "screeningId": 8,
+      "cityId": 2,
+      "screenId": 4,
+      "filmId": 2,
+      "capacity": 200,
+      "matched": true
+    }
+  ]
+}
