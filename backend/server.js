@@ -1,22 +1,31 @@
-import 'dotenv/config';
-import express from 'express';
-import cors from 'cors';
-import apiRoutes from './api.js'
+import "dotenv/config";
+import { readEnvironment } from "./src/config/environment.js";
+import { startServer } from "./src/server.js";
 
-const app = express();
-const PORT = process.env.PORT || 3000;
+let isConfigured = false;
+try {
+  const config = readEnvironment();
+  isConfigured = true;
+  const { server, shutdown } = await startServer({ config });
+  console.log(`Server listening on port ${server.address().port}`);
 
-app.use(
-  cors({
-    origin: process.env.FRONTEND_URL || 'http://localhost:5173',
-    credentials: true
-  })
-);
-
-app.use(express.json());
-
-apiRoutes(app)
-
-app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
-});
+  let isStopping = false;
+  const stop = () => {
+    if (isStopping) return;
+    isStopping = true;
+    shutdown().catch(() => {
+      console.error("Server shutdown failed");
+      process.exitCode = 1;
+    });
+  };
+  process.on("SIGINT", stop);
+  process.on("SIGTERM", stop);
+} catch (error) {
+  // Configuration errors are controlled messages; database errors may contain secrets.
+  console.error(
+    isConfigured
+      ? "Backend startup failed. Check database connectivity and whether PORT is available."
+      : error.message,
+  );
+  process.exitCode = 1;
+}

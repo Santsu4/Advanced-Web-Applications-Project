@@ -8,12 +8,12 @@ The project aims to help customers browse screenings, choose seats, and purchase
 
 Planned technologies:
 
-| Area | Technology |
-| --- | --- |
-| Frontend | React, JavaScript |
-| Backend | Node.js, Express |
-| Database | PostgreSQL, hosted at [CSC](https://www.csc.fi/) |
-| Application hosting | Microsoft Azure |
+| Area                | Technology                                       |
+| ------------------- | ------------------------------------------------ |
+| Frontend            | React, JavaScript                                |
+| Backend             | Node.js, Express                                 |
+| Database            | PostgreSQL, hosted at [CSC](https://www.csc.fi/) |
+| Application hosting | Microsoft Azure                                  |
 
 ## Contributing
 
@@ -33,4 +33,49 @@ Join the [RIO Discord server](https://discord.gg/jJTps5kC9F) for team discussion
 
 ## Status
 
-In development. Local setup instructions will be added once the application configuration has been verified.
+In development. The customer frontend is not initialized yet.
+
+## Backend development
+
+Requires Node.js 22 and access to a PostgreSQL development database. From the
+repository root:
+
+```bash
+cd backend
+npm ci
+cp .env.example .env
+# Edit .env with your development database connection and frontend origin.
+npm test
+npm run dev
+```
+
+`npm start` runs without the development watcher. `PORT` defaults to 3000.
+`DATABASE_URL` must name a PostgreSQL database; `FRONTEND_URL` must be an
+HTTP(S) origin such as `http://localhost:5173`. The old `CLIENT_URL` variable
+is no longer used. Keep `.env` local and never commit real credentials.
+Configuration is validated and database connectivity is checked before listening.
+Stop with Ctrl+C; SIGINT/SIGTERM close HTTP connections and the database pool.
+
+These commands do not create tables or seed records. An empty PostgreSQL database
+can pass the connectivity check, but data endpoints require the schema and data.
+Repeatable isolated schema setup and browsing fixtures are tracked in #39/#52;
+do not apply `backend/db.sql` blindly to a shared database.
+
+`npm test` uses Node's built-in test runner and isolated HTTP servers with injected
+database doubles. It checks configuration, existing route response contracts,
+CORS, startup failures and shutdown; it does not prove a live schema is correct.
+The two PostgreSQL integration checks run when `TEST_DATABASE_URL` is explicitly
+set to a development connection URL before `npm test`; otherwise they are skipped.
+They check real connectivity and a CLI request/shutdown without creating tables
+or records.
+
+Application setup lives in `backend/src/app.js` and has no listening side effect.
+Runtime orchestration lives in `backend/src/server.js`; `backend/server.js` loads
+the environment and handles process signals. Shared configuration is in
+`backend/src/config/`. Existing prototype SQL/routes remain in `backend/api.js`,
+with the pool passed in explicitly. New business logic should follow the feature
+boundaries in the architecture guide as those features are implemented.
+
+The existing Docker Compose/Kubernetes files remain deployment scaffolding:
+the backend container entrypoint and database environment names need the runtime
+integration tracked under #67. Use the commands above for this milestone.
